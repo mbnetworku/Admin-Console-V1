@@ -4,6 +4,9 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.12 - 2026-10-08
+- **Sidebar shows the real version.** The version text at the bottom of the sidebar was a fixed old text (v1.22.0) that was replaced only after the status answer arrived, so the old number could stay on screen. The server now writes the real version into the page (`__APPVER__`), so it is right from the first moment (index.html).
+
 ## 2.11.11 - 2026-10-08
 - **Fix: Settings > About page error.** The version history failed with "Cannot read properties of undefined (reading 'map')" because the newest version entries have no detail list (`n`); `verHtml` now accepts entries without one (index.html only). Rule: every VERSIONS entry may omit `n` and `s`.
 

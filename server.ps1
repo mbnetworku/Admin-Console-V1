@@ -52,7 +52,7 @@ function Set-Start([string]$id, [string]$state, [string]$label, [string]$detail 
 # Writes the final line of the progress file (DONE|url, ERROR|message or SETUP|message).
 function Set-StartEnd([string]$line) { $script:StartEnd = $line; Write-StartFile }
 # Version of the whole tool and its release date (shown on the page and in the logs). Each screen also has its own version in its header.
-$AppVersion = '2.11.11'; $AppDate = '2026-10-08'
+$AppVersion = '2.11.12'; $AppDate = '2026-10-08'
 # Detect files copied from different versions: index.html and login.html must carry the same version stamp as this script
 $script:VerNote = ''
 # The screens that are loaded at start-up: 'Security' means the file Screen-Security.ps1 (its folder comes from $script:CodeDir below).

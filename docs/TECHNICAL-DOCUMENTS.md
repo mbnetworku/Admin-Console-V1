@@ -1,6 +1,6 @@
 # Admin Console - Technical Documents
 
-Current package version: **2.11.11** (2026-10-08). Each screen has its own version (section 12). Version history: `docs/CHANGELOG.md` and Settings > Server > version history.
+Current package version: **2.11.12** (2026-10-08). Each screen has its own version (section 12). Version history: `docs/CHANGELOG.md` and Settings > Server > version history.
 
 ## 1. What it is
 
@@ -23,7 +23,7 @@ Everything runs on the support PC / server. The browser only talks to the local 
 
 | Part | What is used | Version / note |
 |---|---|---|
-| This package | Admin Console | **2.11.11** (`$AppVersion` in server.ps1, `VERSION.txt`); every screen file has its own version |
+| This package | Admin Console | **2.11.12** (`$AppVersion` in server.ps1, `VERSION.txt`); every screen file has its own version |
 | Back end language | Windows PowerShell | **5.1** (PowerShell 7 not required) |
 | Web server | `System.Net.HttpListener` inside server.ps1 | .NET Framework of Windows (4.x); default port 8080; no IIS needed (IIS optional as reverse proxy) |
 | Front end | **Plain JavaScript, no framework** (no React / Vue / Angular / jQuery) | One file `frontend/index.html` (HTML + CSS + JS, about 6,600 lines). Modern browser JavaScript (ECMAScript 2017+: `async/await`, arrow functions, template strings, `fetch`) - current Edge, Chrome or Firefox |
@@ -119,10 +119,10 @@ File names below are inside `backend/<group>/` (see section 3).
 | On-premises AD | Screen-OnPremAd.ps1 | Unlock, reset, enable/disable, etc. |
 | Create AD users | Screen-AdCreate.ps1 | Create only (single or CSV). Optional e-mail with the username and password (template `newuser`, edited in Settings > Email messages; own HTML and logo supported; recipient = the Email of each user or one typed address; password never logged). Username rules, OU picked from existing OUs (tree), groups. No delete, no OU creation, no move, no edit of existing accounts. |
 | Bulk & report, Export | Screen-BulkCsv.ps1, Screen-ExportReport.ps1 | CSV bulk actions and reports. |
-| Users report (was "OU report") | Screen-OuReport.ps1 | Browse and tick one or many existing OUs (with or without sub-OUs) and list its users: e-mail, UPN, account name, display name, first / last name, account expiry, status, description, last modified, password never expires, OU; table + CSV. Read only; permission `bulk`; no row limit (since 2.11.11). |
+| Users report (was "OU report") | Screen-OuReport.ps1 | Browse and tick one or many existing OUs (with or without sub-OUs) and list its users: e-mail, UPN, account name, display name, first / last name, account expiry, status, description, last modified, password never expires, OU; table + CSV. Read only; permission `bulk`; no row limit (since 2.11.12). |
 | Teams, Distribution groups, Shared mailbox, Address list | Screen-TeamsMembers.ps1, Screen-DistGroups.ps1 (+ DistGroups-Worker.ps1), Screen-SharedMailbox.ps1, Screen-AddressList.ps1 | Exchange Online / Graph. Distribution group folder is checked to be a safe folder. |
 | Mailbox cleanup | Screen-MailboxCleanup.ps1 | Uses the signed-in user's own token; folder size from PR_MESSAGE_SIZE_EXTENDED. |
-| Guest users report | Screen-GuestReport.ps1 | NEW 2.11.11. Read only. Every Entra ID guest: created, last sign-in, invitation Accepted / Not accepted (+ date), status, and ALL its groups in one cell with the kind in brackets (M365 group, Teams group, Security group...). Table + CSV. Endpoint /api/guestrep-run (Graph /users filter userType Guest with signInActivity, memberOf by $batch). |
+| Guest users report | Screen-GuestReport.ps1 | NEW 2.11.12. Read only. Every Entra ID guest: created, last sign-in, invitation Accepted / Not accepted (+ date), status, and ALL its groups in one cell with the kind in brackets (M365 group, Teams group, Security group...). Table + CSV. Endpoint /api/guestrep-run (Graph /users filter userType Guest with signInActivity, memberOf by $batch). |
 | Guests | Screen-GuestUsers.ps1 | Invite one or many, e-mail (English/Arabic). |
 | Licenses | Screen-Licenses.ps1 | Totals, direct vs group assignment, bulk assign/remove, group add/remove. |
 | Devices (Intune) | Screen-Intune.ps1 | `managedDeviceOwnerType`, throttling retry. |
@@ -201,7 +201,7 @@ The tool can sit behind IIS (reverse proxy / ARR) so people open `https://admin.
 - The Entra admin-role check after SSO reads the `wids` claim (OIDC only); with SAML only portal administrators are asked.
 - AD operations need a domain-joined host and a domain account with the right delegated rights.
 
-## Progress pop-up and Cancel (v2.11.11)
+## Progress pop-up and Cancel (v2.11.12)
 
 The **Progress** button in the top bar opens a small pop-up in the middle of the page (not full screen, no dark background, the page behind stays usable). **Minimize** (-) shrinks it to a small card at the bottom right; click the card to open it again. **Close** (x) or Escape hides it. A click on a task goes to its screen and minimizes the pop-up.
 

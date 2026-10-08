@@ -4,7 +4,7 @@ A web console for IT support teams to manage **on-premises Active Directory**, *
 
 It runs as a small local web server written in **Windows PowerShell 5.1** and serves one plain-JavaScript page. There is no build step and no database: copy the files, start the `.bat`, open `http://localhost:8080`.
 
-> **Current version: 2.11.11** (2026-10-08)
+> **Current version: 2.11.12** (2026-10-08)
 
 ## What it does
 
