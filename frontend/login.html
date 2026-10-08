@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!-- Screen: Sign-in page | Screen version: 2.8.0 (changes only when this page changes) -->
+<html lang="en"><head><meta charset="utf-8"><meta name="app-version" content="__APPVER__"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign in - Admin Console</title>
+<style>
+:root{--navy:#0b1f3a;--blue:#2563eb;--line:#e5e9f0;--bg:#f4f6fa;--text:#0f172a;--mute:#64748b;--red:#dc2626}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;font-family:"Segoe UI",system-ui,Arial,sans-serif;background:linear-gradient(160deg,var(--navy),#132d52);color:var(--text)}
+.box{width:380px;max-width:92vw;background:#fff;border-radius:16px;padding:32px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:22px}
+.logo{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:grid;place-items:center;font-weight:700;color:#fff;font-size:19px}
+.brand b{display:block;font-size:16px}.brand small{color:var(--mute);font-size:12px}
+label{display:block;font-size:13px;color:var(--mute);margin:14px 0 5px}
+input,select{width:100%;padding:11px 12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;background:#fff;color:#0f172a}
+input:focus{outline:3px solid #bfdbfe;border-color:var(--blue)}
+button{width:100%;margin-top:20px;border:0;border-radius:9px;padding:12px;font:inherit;font-weight:600;background:var(--blue);color:#fff;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+.err{color:var(--red);font-size:13px;margin-top:12px;min-height:18px}
+:root[data-theme=dark]{--line:#263247;--text:#e5e9f0;--mute:#94a3b8;color-scheme:dark}
+:root[data-theme=dark] body{background:linear-gradient(160deg,#050b16,#0f1a30)}
+:root[data-theme=dark] .box{background:#131c2e;border:1px solid #263247}
+:root[data-theme=dark] input,:root[data-theme=dark] select{background:#0f172a;color:#e5e9f0;border-color:#334155}
+:root[data-theme=dark] input:focus{outline-color:#1e3a8a}
+body.ssoOnly #mw,body.ssoOnly label[for=u],body.ssoOnly #u,body.ssoOnly label[for=p],body.ssoOnly #p,body.ssoOnly #rm,body.ssoOnly label:has(#rm),body.ssoOnly #b{display:none!important}
+.ssoBtn{display:flex;align-items:center;justify-content:center;gap:10px;margin:18px 0 4px;padding:11px;border-radius:9px;border:1px solid #8c8c8c;background:#fff;color:#1f1f1f;font-weight:600;font-size:15px;text-decoration:none}.ssoBtn:hover{background:#f3f4f6}
+:root[data-theme=dark] .ssoBtn{background:#1f2937;color:#f1f5f9;border-color:#475569}:root[data-theme=dark] .ssoBtn:hover{background:#273449}
+.ssoOr{align-items:center;gap:10px;margin:16px 0 2px;color:#94a3b8;font-size:12px}.ssoOr:before,.ssoOr:after{content:"";flex:1;height:1px;background:#cbd5e1}
+</style><script>(function(){var mq=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)');function a(){var p='auto';try{p=localStorage.getItem('stTheme')||'auto'}catch(e){}document.documentElement.setAttribute('data-theme',(p==='dark'||(p==='auto'&&mq&&mq.matches))?'dark':'light')}if(mq&&mq.addEventListener)mq.addEventListener('change',a);a()})();</script></head><body>
+<form class="box" id="f" method="post" action="/login" autocomplete="on">
+ <div class="brand"><div class="logo">A</div><div><b>Admin Console</b><small>Sign in to continue</small></div></div>
+ <a id="ssoB" href="#" class="ssoBtn" style="display:none"><img id="ssoLogo" alt="" style="display:none;height:20px;width:auto"><span id="ssoIco">&#128273;</span> <span id="ssoTxt">Sign in with Microsoft</span></a>
+ <div id="ssoOr" class="ssoOr" style="display:none"><span>or sign in with a username and password</span></div>
+ <div id="mw" style="display:none"><label for="m">Sign in with</label><select id="m"><option value="portal">Portal account</option><option value="ad">AD account</option></select><div id="mh" style="font-size:12px;color:#94a3b8;margin-top:5px"></div></div>
+ <label for="u">Username</label><input id="u" name="username" autofocus autocomplete="username" autocapitalize="off" spellcheck="false">
+ <label for="p">Password</label><input id="p" name="password" type="password" autocomplete="current-password">
+ <label style="display:flex;align-items:center;gap:8px;margin:14px 0 0;color:var(--text)"><input id="rm" type="checkbox" style="width:auto;margin:0"> Remember my username</label>
+ <div id="tf" style="display:none;margin-top:14px">
+  <div id="tfEn" style="display:none;font-size:13px;line-height:1.5;color:var(--text)"><b>Set up 2-step sign-in</b><br>Open Microsoft Authenticator (or Google Authenticator) on your phone, add an account ("Other" / "Enter a setup key") and use this key:
+   <div id="tfQr" style="margin:10px 0;display:flex;justify-content:center"></div><div id="tfKey" style="font-family:Consolas,monospace;font-size:15px;font-weight:700;letter-spacing:1px;text-align:center;padding:8px;border:1px dashed #94a3b8;border-radius:8px;user-select:all"></div>
+   <div style="font-size:11.5px;color:#94a3b8;margin-top:6px">Account name: Admin Console. Then type the 6-digit code it shows.</div></div>
+  <label for="otp">6-digit code from your authenticator app</label><input id="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="7" placeholder="123456">
+ </div>
+ <div class="err" id="e"></div>
+ <button id="b" type="submit">Sign in</button>
+ <div style="text-align:center;color:#94a3b8;font-size:11px;margin-top:14px">Version __APPVER__</div>
+</form>
+<script>
+const $=id=>document.getElementById(id);
+// v1.98.11: "Sign in with" - Portal account or AD account (only when an administrator turned AD sign-in on)
+let DOM='';const mh=()=>{const ad=$('m').value==='ad';$('mh').textContent=ad?'Your Windows / AD username and password'+(DOM?' (domain '+DOM+')':'')+'. Only members of the AD groups allowed by the administrator can sign in.':'The username and password the administrator gave you for this portal.';$('u').placeholder=ad?(DOM?DOM+'\\username or username':'username'):''};
+fetch('/login-info').then(r=>r.json()).then(j=>{if(j.sso){const sb=$('ssoB');sb.href='/sso/'+j.sso+'/start';$('ssoTxt').textContent=(j.ssoButton||'Sign in with Microsoft');sb.style.display='flex';$('ssoOr').style.display=j.ssoOnly?'none':'flex';if(j.ssoLogo){const im=$('ssoLogo');im.src='/login-logo?v='+encodeURIComponent(j.ssoLogo);im.onload=()=>{im.style.display='inline';$('ssoIco').style.display='none'}}}if(j.sso&&j.ssoOnly){document.body.classList.add('ssoOnly');const sb=$('ssoB');const em=document.createElement('a');em.href='#';em.id='emB';em.textContent='Emergency owner sign-in';em.style.cssText='display:block;text-align:center;font-size:11.5px;color:#94a3b8;margin-top:12px';sb.after(em);em.onclick=e=>{e.preventDefault();document.body.classList.remove('ssoOnly');em.remove();$('u').focus()}}if(!j.ad)return;DOM=j.domain||'';$('mw').style.display='';try{const sm=localStorage.getItem('pr_mode');if(sm==='ad'||sm==='portal')$('m').value=sm}catch(x){}mh()}).catch(()=>{});
+$('m').onchange=()=>{mh();try{localStorage.setItem('pr_mode',$('m').value)}catch(x){};const b=$('b');clearInterval(lockT);b.disabled=false;b.textContent='Sign in';$('e').textContent='';$('u').focus()};
+$('u').addEventListener('input',()=>{if(lockT){clearInterval(lockT);lockT=null;const b=$('b');b.disabled=false;b.textContent='Sign in';$('e').textContent=''}});
+try{const su=localStorage.getItem('pr_user');if(su){$('u').value=su;$('rm').checked=true;$('p').focus()}}catch(x){}
+$('f').onsubmit=async ev=>{ev.preventDefault();
+ try{if($('rm').checked)localStorage.setItem('pr_user',$('u').value.trim());else localStorage.removeItem('pr_user')}catch(x){}
+ const b=document.getElementById('b'),e=document.getElementById('e');b.disabled=true;e.textContent='';
+ try{const r=await fetch('/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:$('m').value,username:document.getElementById('u').value,password:document.getElementById('p').value,otp:$('tf').style.display===''?$('otp').value.trim():''})});
+  const j=await r.json();if(r.ok&&j.ok){location.replace('/');return}
+  if(j.needOtp||j.enroll){$('tf').style.display='';$('u').readOnly=true;$('p').readOnly=true;$('otp').value='';e.textContent=j.error||'';b.textContent='Verify';
+   if(j.enroll){$('tfEn').style.display='';$('tfKey').textContent=j.secret;qr(j.uri)}else $('tfEn').style.display='none';b.disabled=false;$('otp').focus();return}
+  if($('tf').style.display===''){$('tf').style.display='none';$('u').readOnly=false;$('p').readOnly=false;b.textContent='Sign in'}
+  e.textContent=j.error||'Sign in failed.';document.getElementById('p').value='';
+  if(j.lockedUntil){lockTill(new Date(j.lockedUntil),j.error);return}document.getElementById('p').focus()}
+ catch(x){e.textContent='Could not reach the tool. Is it still running?'}
+ b.disabled=false};
+// v2.4.0: QR code for the authenticator app (if the QR library can load - otherwise the key is typed)
+function qr(u){const box=$('tfQr');box.innerHTML='';const go=()=>{try{new QRCode(box,{text:u,width:170,height:170,correctLevel:QRCode.CorrectLevel.M})}catch(x){}};if(window.QRCode)return go();const sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';sc.onload=go;document.head.appendChild(sc)}
+// locked after 5 wrong attempts: the button stays off and counts down until the 15 minutes are over
+let lockT=null;function lockTill(t,msg){const b=$('b');b.disabled=true;clearInterval(lockT);
+ const tick=()=>{const s=Math.ceil((t-Date.now())/1000);if(s<=0){clearInterval(lockT);b.disabled=false;b.textContent='Sign in';$('e').textContent='You can sign in again now.';$('p').focus();return}
+  b.textContent='Locked - '+Math.floor(s/60)+':'+String(s%60).padStart(2,'0');$('e').textContent=msg};tick();lockT=setInterval(tick,1000)}
+</script></body></html>
