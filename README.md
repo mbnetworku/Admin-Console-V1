@@ -4,7 +4,7 @@ A web console for IT support teams to manage **on-premises Active Directory**, *
 
 It runs as a small local web server written in **Windows PowerShell 5.1** and serves one plain-JavaScript page. There is no build step and no database: copy the files, start the `.bat`, open `http://localhost:8080`.
 
-> **Current version: 2.11.9** (2026-10-08)
+> **Current version: 2.11.11** (2026-10-08)
 
 ## What it does
 
@@ -25,6 +25,7 @@ It runs as a small local web server written in **Windows PowerShell 5.1** and se
 **Administration**
 - Roles and per-screen permissions; sign-in with local accounts, on-premises AD, or SAML / OIDC single sign-on (linked users only)
 - Settings > Connections: Microsoft 365 and AD sign-in, choose the domain controller (only on a domain-joined PC), Microsoft app registration
+- **Progress** (button in the top bar): a small pop-up in the middle of the screen with *Minimize* and *Close*. Each running task has a **Cancel** button
 - Activity log, audit and event logs, e-mail template editor with logo, HTTPS setup, update and revert tools
 
 ## Requirements
@@ -48,7 +49,7 @@ Other launchers: `Install-Service.bat` (run as a Windows service), `Allow-Tool.b
 - **Owner login (the first login of the tool):** on the server PC double-click **`Reset-Password.bat`**. Windows asks once for administrator rights (the file runs as administrator by itself). Type a new username and a new password (at least 8 characters, typed twice). You do **not** need the old password: being administrator of the server PC is the proof. Then open the tool and sign in with the new login.
 - **Any other person:** an administrator resets the password in **Settings > Users** (set a new password or generate one and e-mail it).
 - To simply change a password you still know, use `Change-Login.bat` (it asks for the old one first).
-- The sign-in page shows this message, and every reset is written to the sign-in log.
+- Every reset is written to the sign-in log. (The sign-in page itself shows no such message; this information is only here, in the technical documents and in the AI memory file.)
 
 
 ## How it is built

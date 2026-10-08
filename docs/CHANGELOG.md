@@ -4,6 +4,12 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.11 - 2026-10-08
+- **Fix: Settings > About page error.** The version history failed with "Cannot read properties of undefined (reading 'map')" because the newest version entries have no detail list (`n`); `verHtml` now accepts entries without one (index.html only). Rule: every VERSIONS entry may omit `n` and `s`.
+
+## 2.11.10 - 2026-10-08
+- **Progress is a small pop-up with Minimize, Close and Cancel.** It opens in the middle (not full screen), can be minimized to a small card at the bottom right, and closed. Running tasks get a **Cancel** button where cancelling really works: background jobs (stopped on the server), step-by-step runs such as Revoke MFA and Create AD users (remaining steps are not started) and read-only lookups. Changes already sent to the server cannot be taken back, so those have no Cancel. Also: the "Cannot sign in?" message was removed from the sign-in page - the Reset-Password.bat information stays in README, TECHNICAL-DOCUMENTS and the AI memory file only.
+
 ## 2.11.9 - 2026-10-08
 - **Forgot the owner password: Reset-Password.bat.** New launcher that runs as administrator by itself and sets a NEW owner login without asking for the old password (being local administrator is the proof; `server.ps1 -ResetLogin`). The reset is written to the sign-in log. `Change-Login.bat` now also runs as administrator (it still asks for the old login). The sign-in page shows a short "Cannot sign in?" message; README has a new section.
 

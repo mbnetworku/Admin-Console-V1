@@ -1,6 +1,6 @@
 # Admin Console 2.x - multi-user design and working rules (current v2.7.1)
 
-**Stack (2.11.9):** Windows PowerShell 5.1 back end, plain JavaScript front end (no framework), Microsoft Graph PowerShell SDK, System.DirectoryServices. See TECHNICAL-DOCUMENTS.md section 2b.
+**Stack (2.11.11):** Windows PowerShell 5.1 back end, plain JavaScript front end (no framework), Microsoft Graph PowerShell SDK, System.DirectoryServices. See TECHNICAL-DOCUMENTS.md section 2b.
 
 ## Working rules (user preference)
 - **Versions are per screen (since 2.8.0).** Raise the `Screen version:` header ONLY in the files that really changed; every other screen keeps its number. Never replace the version number in all files. Updates screen / What's new then say: this screen updated, new screen, all others same.
