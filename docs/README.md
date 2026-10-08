@@ -9,7 +9,7 @@ All documentation lives in this folder.
 | [admin-console-iis-publish-guide.md](admin-console-iis-publish-guide.md) | Step-by-step: publish the tool on IIS behind https |
 | [CHANGELOG.md](CHANGELOG.md) | What changed in every version |
 
-**Stack in one line (package 2.10.2):** Windows PowerShell 5.1 back end (HttpListener, port 8080) + one plain-JavaScript page (no framework; only qrcodejs 1.0.0 on the sign-in page) + Microsoft Graph PowerShell SDK (one common version) + System.DirectoryServices for AD. Details: TECHNICAL-DOCUMENTS.md section 2b.
+**Stack in one line (package 2.11.0):** Windows PowerShell 5.1 back end (HttpListener, port 8080) + one plain-JavaScript page (no framework; only qrcodejs 1.0.0 on the sign-in page) + Microsoft Graph PowerShell SDK (one common version) + System.DirectoryServices for AD. Details: TECHNICAL-DOCUMENTS.md section 2b.
 
 Folder map of the whole package:
 

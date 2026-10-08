@@ -4,6 +4,12 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.0 - 2026-10-08
+- **New screen: Guest users report** (Microsoft 365, `backend/Microsoft365/Screen-GuestReport.ps1`, endpoint `/api/guestrep-run`, permission *guests*, needs the Microsoft sign-in). Lists every guest: display name, e-mail, UPN, created, last sign-in, invitation Accepted / Not accepted (and accepted-on date), enabled or disabled, number of groups and ALL group names in one cell with the kind in brackets - M365 group, Teams group, Security group, Distribution list, Mail-enabled security. Filter box + invitation drop-down, sortable columns, CSV with BOM. Last sign-in needs AuditLog.Read.All (+ Entra ID P1/P2); if refused, the report still works and a note says why. Read only; no limit on the number of guests.
+
+## 2.10.3 - 2026-10-08
+- **Users report: no user limit.** The 20,000-user cap was removed; every user of the chosen OUs is reported (Screen-OuReport 2.10.3, index.html text only).
+
 ## 2.10.2 - 2026-10-08
 - **Users report: choose several OUs.** The OU list was replaced by a *Browse OUs* button with the OU tree (tick boxes, search) like Create AD users; one report for one or many OUs (up to 50), duplicates removed, chips show the choice. `/api/ourep-run` now takes `ous` (array; `ou` still works). CSV is named after the OU or `Multiple_OUs`. Screens changed: Users report, Server core, Web page (shared UI).
 

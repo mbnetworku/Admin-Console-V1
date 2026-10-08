@@ -1,0 +1,1 @@
+﻿2026-10-08 17:32:44  Version 2.6.2 of the Admin Console is still running and did not stop. Use Session > Shut down in its page (or restart the PC), then start v2.10.2 again.

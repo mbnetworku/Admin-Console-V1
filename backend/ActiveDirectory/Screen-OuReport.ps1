@@ -1,6 +1,6 @@
 ﻿# Screen-OuReport.ps1 - back end for one screen of the tool. Loaded by server.ps1 at start-up; do not run it on its own.
 # Screen: Users report
-# Screen version: 2.10.2   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.10.3   (changes ONLY when this screen changes - not with every release)
 
 # WHAT IT DOES: the "Users report" screen (it was called "OU report" in 2.10.0). The person picks one OU of the on-premises Active Directory (from the list of OUs that really exist)
 # and gets one row per user account in it: e-mail, user principal name, account name (sAMAccountName), display name, first name, last name,
@@ -13,8 +13,8 @@
 # DATA: reads AD through the AD sign-in held in $script:AdCred (New-AdEntry). Uses Get-AdcOus (Screen-AdCreate.ps1) for the OU list.
 # PERMISSION: the "Bulk & report" permission (see $script:ApiNeed in Screen-Users.ps1) and an on-premises AD sign-in.
 
-# The report stops at this many users, so one request cannot run for ever or fill the browser. The page tells the person when it was cut.
-$script:OuRepMax = 20000
+# NO limit (2.10.3): every user of the chosen OUs is reported. The value is only a safety ceiling that cannot be reached in practice.
+$script:OuRepMax = [int]::MaxValue
 
 # Stops the request with a clear message unless this PC is domain joined and the person has signed in to on-premises AD.
 function Test-OuRepReady {

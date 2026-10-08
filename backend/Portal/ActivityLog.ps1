@@ -52,6 +52,7 @@ $script:ActMap = @{
     '/api/bulk-apply'       = @('Bulk & report', 'Bulk change')
     '/api/teams-add'        = @('Teams members', 'Add to team')
     '/api/guest-invite'     = @('Guest users', 'Invite guest')
+    '/api/guestrep-run'     = @('Guest users report', 'Run report')
     '/api/mbx-notify'       = @('Shared mailbox', 'E-mail people about the mailbox')
     '/api/app-defaults'     = @('Settings', 'Change defaults')
     '/api/ad-server'        = @('Settings', 'Change AD server')

@@ -1,0 +1,13 @@
+PID|26916
+STEP|files|ok|Admin Console files|v2.11.0 - 36 parts, each with its own version
+STEP|port|ok|Port 8080|free
+STEP|login|ok|Tool login|set up
+STEP|Microsoft.Graph.Authentication|ok|Microsoft.Graph.Authentication|installed 2.41.0
+STEP|Microsoft.Graph.Users|ok|Microsoft.Graph.Users|installed 2.41.0
+STEP|Microsoft.Graph.Identity.SignIns|ok|Microsoft.Graph.Identity.SignIns|installed 2.41.0
+STEP|Microsoft.Graph.Identity.DirectoryManagement|ok|Microsoft.Graph.Identity.DirectoryManagement|installed 2.41.0
+STEP|import|ok|Loading Microsoft Graph|Microsoft Graph SDK 2.41.0 loaded
+STEP|exo|ok|ExchangeOnlineManagement|installed 3.10.1 (Distribution groups, Shared mailbox)
+STEP|screens|ok|Screens|31 screens and the activity log loaded
+STEP|web|warn|Web page|http://localhost:8080/ - http://supporttool could not be used: Access to the path 'C:\WINDOWS\System32\drivers\etc\hosts' is denied.
+DONE|http://localhost:8080/

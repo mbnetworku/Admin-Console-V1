@@ -167,7 +167,7 @@ $script:ApiNeed = @{
     '/api/reset' = 'reset'; '/api/reset-mail' = 'email'; '/api/reset-mail-preview' = 'email'; '/api/reset-mail-info' = 'email'
     '/api/enable' = 'accounts'; '/api/disable' = 'accounts'; '/api/onprem-account' = 'accounts'
     '/api/mfa-list' = 'mfa'; '/api/mfa-list-many' = 'mfa'; '/api/mfa-mail' = 'mfa'; '/api/mfa-revoke' = 'mfa'; '/api/mfa-log' = 'mfa'
-    '/api/onprem-report' = 'bulk'; '/api/ourep-ous' = 'bulk'; '/api/ourep-run' = 'bulk'; '/api/guest-invite' = 'guests'
+    '/api/onprem-report' = 'bulk'; '/api/ourep-ous' = 'bulk'; '/api/ourep-run' = 'bulk'; '/api/guest-invite' = 'guests'; '/api/guestrep-run' = 'guests'
     '/api/email-tpl-save' = 'settings'; '/api/email-custom-save' = 'settings'; '/api/email-tpl-reset' = 'settings'; '/api/email-img-save' = 'settings'; '/api/email-img-remove' = 'settings'
     '/api/logs-config-save' = 'settings'; '/api/logs-settings' = 'settings'; '/api/logs-autocopy' = 'settings'; '/api/shutdown' = 'server'; '/api/restart' = 'server'
     '/api/users-list' = 'users'; '/api/users-save' = 'users'; '/api/users-delete' = 'users'; '/api/users-adcheck' = 'users'; '/api/adlogin-get' = 'users'; '/api/adlogin-save' = 'users'; '/api/logs-logins' = 'logs'
