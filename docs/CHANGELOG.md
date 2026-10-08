@@ -4,6 +4,9 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.7 - 2026-10-08
+- **Copyright notice removed** (owner has no copyright yet): sidebar, Settings > About, sign-in page, `LICENSE.txt` and the README lines are gone. Nothing else changed.
+
 ## 2.11.6 - 2026-10-08
 - **One README.** The project README and the docs index were combined into `README.md` in the package root (current version, all screens including Users report and Guest users report, requirements, quick start, folder map, document list, copyright). `docs/README.md` is now a short pointer to it. The README is updated in every release.
 

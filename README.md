@@ -4,7 +4,7 @@ A web console for IT support teams to manage **on-premises Active Directory**, *
 
 It runs as a small local web server written in **Windows PowerShell 5.1** and serves one plain-JavaScript page. There is no build step and no database: copy the files, start the `.bat`, open `http://localhost:8080`.
 
-> **Current version: 2.11.6** (2026-10-08)  |  Copyright (c) 2026 MB Network. All rights reserved. See `LICENSE.txt`.
+> **Current version: 2.11.7** (2026-10-08)
 
 ## What it does
 
@@ -59,7 +59,6 @@ Each screen has its own version number and the package has its own. Every change
 ```
 PasswordReset/
   README.md   this file
-  LICENSE.txt copyright and terms
   VERSION.txt package version
   server.ps1  the server itself (entry point)
   *.bat       launchers
