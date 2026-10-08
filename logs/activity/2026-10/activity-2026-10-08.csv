@@ -25,3 +25,7 @@
 "2026-10-08 19:21:46","MUSLIM_PC","MUSLIM_PC\Muslim","","","Tool login","Log in to the tool","infraadmin","Done","","UTC+03:00","Owner","::1","MUSLIM_PC (this PC)"
 "2026-10-08 19:34:57","MUSLIM_PC","MUSLIM_PC\Muslim","","","Settings","Update uploaded","AdminConsole-2.11.12.zip","Done","Version 2.11.12 (running 2.11.11)","UTC+03:00 (Asia/Bahrain)","Owner","::1","MUSLIM_PC (this PC)"
 "2026-10-08 19:35:14","MUSLIM_PC","MUSLIM_PC\Muslim","","","Settings","Update installed","2.11.11 -> 2.11.12","Done","54 files; backup AdminConsole-2.11.11-20261008-193513.zip","UTC+03:00 (Asia/Bahrain)","Owner","::1","MUSLIM_PC (this PC)"
+"2026-10-08 19:39:11","MUSLIM_PC","MUSLIM_PC\Muslim","","","Tool login","Log in to the tool","","Failed: Incorrect username or password. 4 attempts left before this account is locked for 15 minutes.","","UTC+03:00","","::1","MUSLIM_PC (this PC)"
+"2026-10-08 19:39:29","MUSLIM_PC","MUSLIM_PC\Muslim","","","Tool login","Log in to the tool","infraadmin","Done","","UTC+03:00","Owner","::1","MUSLIM_PC (this PC)"
+"2026-10-08 19:39:46","MUSLIM_PC","MUSLIM_PC\Muslim","","","Settings","Update uploaded","AdminConsole-2.11.13.zip","Done","Version 2.11.13 (running 2.11.12)","UTC+03:00 (Asia/Bahrain)","Owner","::1","MUSLIM_PC (this PC)"
+"2026-10-08 19:40:00","MUSLIM_PC","MUSLIM_PC\Muslim","","","Settings","Update installed","2.11.12 -> 2.11.13","Done","54 files; backup AdminConsole-2.11.12-20261008-193959.zip","UTC+03:00 (Asia/Bahrain)","Owner","::1","MUSLIM_PC (this PC)"
