@@ -1,5 +1,5 @@
-PID|26916
-STEP|files|ok|Admin Console files|v2.11.0 - 36 parts, each with its own version
+PID|28588
+STEP|files|ok|Admin Console files|v2.11.1 - 36 parts, each with its own version
 STEP|port|ok|Port 8080|free
 STEP|login|ok|Tool login|set up
 STEP|Microsoft.Graph.Authentication|ok|Microsoft.Graph.Authentication|installed 2.41.0

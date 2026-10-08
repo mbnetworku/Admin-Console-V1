@@ -1,3 +1,6 @@
 ﻿Time,WindowsUser,EnteredUsername,Result,ClientIP,ClientPC
 "2026-10-08T17:35:09","MUSLIM_PC\Muslim","infraadmin","Success (owner sign-in)","::1","MUSLIM_PC (this PC)"
 "2026-10-08T17:37:32","MUSLIM_PC\Muslim","Owner","Updated from 2.10.2 to 2.11.0","::1","MUSLIM_PC (this PC)"
+"2026-10-08T17:48:17","MUSLIM_PC\Muslim","infraadmin","Success (owner sign-in)","::1","MUSLIM_PC (this PC)"
+"2026-10-08T17:54:58","MUSLIM_PC\Muslim","Owner","Updated from 2.11.0 to 2.11.1","::1","MUSLIM_PC (this PC)"
+"2026-10-08T17:56:21","MUSLIM_PC\Muslim","infraadmin","Success (owner sign-in)","::1","MUSLIM_PC (this PC)"

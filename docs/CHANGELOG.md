@@ -4,6 +4,9 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.1 - 2026-10-08
+- **Settings opens faster.** Opening Settings > Connections used to search for domain controllers on its own; on a slow network this froze the server (it answers one request at a time) and made every Settings section feel slow. It now searches only when you press *Find DCs*, and the list is kept for 10 minutes (Screen-Settings 2.11.1, index.html).
+
 ## 2.11.0 - 2026-10-08
 - **New screen: Guest users report** (Microsoft 365, `backend/Microsoft365/Screen-GuestReport.ps1`, endpoint `/api/guestrep-run`, permission *guests*, needs the Microsoft sign-in). Lists every guest: display name, e-mail, UPN, created, last sign-in, invitation Accepted / Not accepted (and accepted-on date), enabled or disabled, number of groups and ALL group names in one cell with the kind in brackets - M365 group, Teams group, Security group, Distribution list, Mail-enabled security. Filter box + invitation drop-down, sortable columns, CSV with BOM. Last sign-in needs AuditLog.Read.All (+ Entra ID P1/P2); if refused, the report still works and a note says why. Read only; no limit on the number of guests.
 

@@ -1,6 +1,6 @@
 ﻿# Screen-Settings.ps1 - back end for one screen of the tool. Loaded by server.ps1 at start-up; do not run it on its own.
 # Screen: Settings (defaults, appearance, session)
-# Screen version: 2.8.2   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.11.1   (changes ONLY when this screen changes - not with every release)
 
 # The other sections of the Settings screen use their own back ends: Email sender (Screen-CloudPassword.ps1 /api/mail-settings),
 # Email messages (Screen-EmailTemplates.ps1), Logs (ActivityLog.ps1), sign-in and session (server.ps1).
@@ -95,7 +95,10 @@ $ScreenHandlers['/api/ad-server'] = {
         @{ host = $h; domain = (("$n" -split ',' | Where-Object { $_ -match '^DC=' } | ForEach-Object { $_.Substring(3) }) -join '.') }
     }
     if ($d.discover) {
+        # v2.11.1: finding the DCs can take many seconds and the server answers one request at a time, so the list is kept for 10 minutes.
+        if ($script:DcCache -and ((Get-Date) - $script:DcCacheAt).TotalMinutes -lt 10 -and -not $d.refresh) { Send $ctx @{ ok = $true; dcs = $script:DcCache }; return }
         $list = @(); try { Add-Type -AssemblyName System.DirectoryServices; $dom = [DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain(); $list = @($dom.DomainControllers | ForEach-Object { @{ name = "$($_.Name)"; site = "$($_.SiteName)"; ip = "$($_.IPAddress)" } }) } catch { throw 'Could not list the domain controllers. This PC may not be joined to a domain; type the DC name instead.' }
+        $script:DcCache = $list; $script:DcCacheAt = Get-Date
         Send $ctx @{ ok = $true; dcs = $list }; return
     }
     if ($d.test) { $r = & $probe "$($d.server)".Trim(); Send $ctx @{ ok = $true; host = $r.host; domain = $r.domain }; return }
