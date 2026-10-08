@@ -14,10 +14,11 @@
 #   log-settings.json, app-defaults.json, shutdown.signal, the Windows hosts file (administrator only).
 # Who may use it: anybody can open the sign-in page; every /api/ call needs the page token + a valid sign-in session, then the
 #   permission check Get-ApiDenied (see Screen-Users.ps1).
-# Switches: -ChangeLogin (change the owner login), -Background (no window), -ShowWindow (keep window), -NoBrowser, -Splash.
+# Switches: -ChangeLogin (change the owner login, asks for the old one), -ResetLogin (forgot it: set a NEW owner login, needs local administrator), -Background (no window), -ShowWindow (keep window), -NoBrowser, -Splash.
 # =====================================================================================================================
 param(
     [switch]$ChangeLogin,
+    [switch]$ResetLogin,   # v2.11.9: Reset-Password.bat - new owner login without the old one (only as local administrator)
     [switch]$Background,   # started by itself with no window (the normal way since v1.78.0)
     [switch]$ShowWindow,   # Start-Visible.bat: keep this PowerShell window, like before (for troubleshooting)
     [switch]$NoBrowser,    # v1.98.41: restarted from the page - the browser tab is already open
@@ -51,7 +52,7 @@ function Set-Start([string]$id, [string]$state, [string]$label, [string]$detail 
 # Writes the final line of the progress file (DONE|url, ERROR|message or SETUP|message).
 function Set-StartEnd([string]$line) { $script:StartEnd = $line; Write-StartFile }
 # Version of the whole tool and its release date (shown on the page and in the logs). Each screen also has its own version in its header.
-$AppVersion = '2.11.7'; $AppDate = '2026-10-08'
+$AppVersion = '2.11.9'; $AppDate = '2026-10-08'
 # Detect files copied from different versions: index.html and login.html must carry the same version stamp as this script
 $script:VerNote = ''
 # The screens that are loaded at start-up: 'Security' means the file Screen-Security.ps1 (its folder comes from $script:CodeDir below).
@@ -839,6 +840,15 @@ $script:AdAvail = try { [bool](Get-CimInstance Win32_ComputerSystem -ErrorAction
 $script:Auth = Read-Auth
 if (Test-Path $OldAuthFile) { try { Remove-Item $OldAuthFile -Force; Write-Host 'Removed the old saved login file from this PC (the login now lives inside the script).' -ForegroundColor Yellow } catch {} }
 # Change-Login.bat: ask for old + new login, save it and quit.
+# v2.11.9: Reset-Password.bat. For when the owner password is forgotten: no old password is asked, because being LOCAL ADMINISTRATOR of this PC is the proof.
+if ($ResetLogin) {
+    $isAdm = $false; try { $isAdm = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) } catch {}
+    if (-not $isAdm) { Write-Host 'Run Reset-Password.bat as administrator (right-click > Run as administrator).' -ForegroundColor Red; exit 1 }
+    Write-Host 'Reset the owner login. You do not need the old password.' -ForegroundColor Cyan
+    if (-not (Invoke-LoginSetup $false)) { exit 1 }
+    try { Write-LoginLog 'Owner' 'Owner login was reset with Reset-Password.bat' } catch {}
+    Write-Host 'Done. Open the tool and sign in with the new login. (Other people: reset their password in Settings > Users.)'; exit 0
+}
 if ($ChangeLogin) {
     if (-not (Invoke-LoginSetup $true)) { exit 1 }
     Write-Host 'Login updated. Start the tool with Start.bat.'; exit 0

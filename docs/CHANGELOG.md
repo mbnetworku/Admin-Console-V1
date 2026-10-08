@@ -4,6 +4,12 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.9 - 2026-10-08
+- **Forgot the owner password: Reset-Password.bat.** New launcher that runs as administrator by itself and sets a NEW owner login without asking for the old password (being local administrator is the proof; `server.ps1 -ResetLogin`). The reset is written to the sign-in log. `Change-Login.bat` now also runs as administrator (it still asks for the old login). The sign-in page shows a short "Cannot sign in?" message; README has a new section.
+
+## 2.11.8 - 2026-10-08
+- **Short lists with Show more.** Settings > Updates: the table *Installed screens and their versions* and the *Saved versions* table, and the version history (Settings > About and the version pop-up), now show only the first 5 rows. Buttons: *Show 5 more*, *Show all*, *Show fewer*; a line says "Showing N of M". Helpers `fewTable` / `fewApply` / `verRender` in index.html (page only).
+
 ## 2.11.7 - 2026-10-08
 - **Copyright notice removed** (owner has no copyright yet): sidebar, Settings > About, sign-in page, `LICENSE.txt` and the README lines are gone. Nothing else changed.
 
