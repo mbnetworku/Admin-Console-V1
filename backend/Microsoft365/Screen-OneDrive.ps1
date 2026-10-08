@@ -1,6 +1,6 @@
 ﻿# Screen-OneDrive.ps1 - back end for the OneDrive & storage screen.
 # Screen: OneDrive & storage
-# Screen version: 2.5.5   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.5.6   (changes ONLY when this screen changes - not with every release)
 # Loaded by server.ps1 at start-up; do not run it on its own.
 #
 #  * Storage usage (read only): how much is used in the tenant - every OneDrive, every SharePoint site and every mailbox, with
@@ -248,13 +248,13 @@ function Complete-GJob_oddel($j, $res, $err) {
     if ($err) { Write-ActRow 'OneDrive & storage' 'Delete OneDrive' '' "Failed: $err" '' }
     $script:SpDirty = $true
 }
-# Handler: start the delete job. Request: mode ('recycle' or 'permanent'), confirm (must be exactly DELETE for permanent), urls (max 200).
+# Handler: start the delete job. Request: mode ('recycle' or 'permanent'), confirm (DELETE (any letter case) for permanent), urls (max 200).
 # Safety: only https addresses on THIS tenant's -my host of the form /personal/<name> are accepted - never SharePoint team sites.
 # Needs the SharePoint admin sign-in; if missing the reply is { needSpo = true } so the page can ask for it.
 $ScreenHandlers['/api/od-delete'] = {
     if (-not $script:Who) { throw 'Sign in to Microsoft first (Settings > Connections).' }
     $mode = "$($d.mode)"; if ($mode -notin 'recycle', 'permanent') { throw 'Choose recycle bin or permanent.' }
-    if ($mode -eq 'permanent' -and "$($d.confirm)" -cne 'DELETE') { throw 'Type DELETE to confirm a permanent delete.' }
+    if ($mode -eq 'permanent' -and "$($d.confirm)" -ne 'DELETE') { throw 'Type DELETE to confirm a permanent delete.' }
     $my = Get-SpoMyHost
     $urls = @(@($d.urls) | ForEach-Object { "$_".Trim().TrimEnd('/') } | Where-Object { $_ } | Select-Object -Unique)
     if (-not $urls.Count) { throw 'Choose at least one OneDrive.' }

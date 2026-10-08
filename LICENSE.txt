@@ -1,0 +1,15 @@
+Admin Console
+Copyright (c) 2026 MB Network. All rights reserved.
+
+This software and its documentation are the property of MB Network.
+No part of it may be copied, modified, distributed, sublicensed or sold
+without the written permission of MB Network.
+
+The software is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose and non-infringement. In no event shall
+MB Network be liable for any claim, damages or other liability arising from
+the use of the software.
+
+Third-party components keep their own licenses (for example qrcodejs 1.0.0 on
+the sign-in page, and the Microsoft Graph PowerShell SDK).

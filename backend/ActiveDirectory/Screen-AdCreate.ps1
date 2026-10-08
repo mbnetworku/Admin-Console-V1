@@ -269,7 +269,7 @@ function Send-NewUserMail($o, $pw, $to, $pwOnce) {
 # Sends back one result row per user (Created / Created (partly) / Failed / Not created) including the password, so the operator can hand it over.
 $ScreenHandlers['/api/adc-create'] = {
     Test-AdcReady
-    if ("$($d.confirm)" -cne 'CREATE') { throw 'Type CREATE to confirm.' }
+    if ("$($d.confirm)" -ne 'CREATE') { throw 'Type CREATE to confirm.' }
     $rows = @($d.rows); if (-not $rows.Count) { throw 'No users to create.' }; if ($rows.Count -gt 500) { throw 'Up to 500 users at a time.' }
     $pwMode = "$($d.pwMode)"; $pwLen = [Math]::Max(10, [Math]::Min(32, [int]$(if ($d.pwLength) { $d.pwLength } else { 14 })))
     if ($pwMode -eq 'custom' -and -not (Test-AdPwRule "$($d.password)")) { throw 'The password must be at least 8 characters and cannot start or end with a special character.' }

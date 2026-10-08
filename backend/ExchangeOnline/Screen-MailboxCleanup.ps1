@@ -1,6 +1,6 @@
 ﻿# Screen-MailboxCleanup.ps1 - back end for the Mailbox cleanup screen.
 # Screen: Mailbox cleanup
-# Screen version: 2.5.0   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.5.1   (changes ONLY when this screen changes - not with every release)
 # Loaded by server.ps1 at start-up; do not run it on its own.
 #
 # Deletes the MAIL of user mailboxes (all mail folders, chosen folders, or only items older than a date) - the mailbox and the
@@ -181,11 +181,11 @@ function Complete-GJob_mprun($j, $res, $err) {
     # Mark the saved state as changed so it is written to disk.
     $script:SpDirty = $true
 }
-# ENDPOINT /api/mp-run - DELETES MAIL. Input: $d.confirm (must be exactly DELETE, case sensitive), $d.users (e-mail addresses, max 50),
+# ENDPOINT /api/mp-run - DELETES MAIL. Input: $d.confirm (DELETE in capital or small letters), $d.users (e-mail addresses, max 50),
 # $d.scope (folder names or 'all' / 'other'), $d.before (optional yyyy-mm-dd: only older mail), $d.removeFolders (also remove the folders).
 # Returns { ok, id } of the 'mprun' background job. The action is written to the activity log when it starts.
 $ScreenHandlers['/api/mp-run'] = {
-    if ("$($d.confirm)" -cne 'DELETE') { throw 'Type DELETE to confirm.' }
+    if ("$($d.confirm)" -ne 'DELETE') { throw 'Type DELETE to confirm.' }
     # Only accept entries that look like name@domain (one @, no spaces).
     $users = @(@($d.users) | ForEach-Object { "$_".Trim() } | Where-Object { $_ -match '^[^@\s]+@[^@\s]+$' } | Select-Object -Unique)
     if (-not $users.Count) { throw 'Choose at least one mailbox.' }

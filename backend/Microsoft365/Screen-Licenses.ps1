@@ -1,6 +1,6 @@
 ﻿# Screen-Licenses.ps1 - back end for the Licenses screen. Loaded by server.ps1 at start-up; do not run it on its own.
 # Screen: Licenses
-# Screen version: 2.5.0   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.5.1   (changes ONLY when this screen changes - not with every release)
 #
 # Licenses (Microsoft 365):
 #  * Every license (subscribed SKU): total bought, assigned / used, remaining - and how the people got it: directly, or from a group.
@@ -159,7 +159,7 @@ foreach ($who in @($p.Users)) {
 $ScreenHandlers['/api/lic-change'] = {
     if (-not $script:Who) { throw 'Sign in to Microsoft first (Settings > Connections).' }
     $act = "$($d.action)"; if ($act -notin 'assign', 'remove', 'groupadd', 'groupremove') { throw 'Choose what to do.' }
-    if ("$($d.confirm)" -cne 'APPLY') { throw 'Type APPLY to confirm.' }
+    if ("$($d.confirm)" -ne 'APPLY') { throw 'Type APPLY to confirm.' }
     $users = @(@($d.users) | ForEach-Object { "$_".Trim() } | Where-Object { $_ } | Select-Object -Unique)
     if (-not $users.Count) { throw 'Choose at least one person.' }
     # Safety limit per run. The characters \ / ? # are refused in names because they would change the Graph URL.

@@ -1,6 +1,6 @@
 ﻿# Screen-Settings.ps1 - back end for one screen of the tool. Loaded by server.ps1 at start-up; do not run it on its own.
 # Screen: Settings (defaults, appearance, session)
-# Screen version: 2.11.1   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.11.5   (changes ONLY when this screen changes - not with every release)
 
 # The other sections of the Settings screen use their own back ends: Email sender (Screen-CloudPassword.ps1 /api/mail-settings),
 # Email messages (Screen-EmailTemplates.ps1), Logs (ActivityLog.ps1), sign-in and session (server.ps1).
@@ -86,6 +86,11 @@ function Get-AdDefaultRoot {
 #   { save:true, mode, server }  save the choice (a manual DC is tested first)
 # Changing it needs the Settings permission (Get-ApiNeed). Nothing else is changed; the AD sign-in stays as it is.
 $ScreenHandlers['/api/ad-server'] = {
+    # v2.11.4: a PC that is NOT joined to a domain has no domain controller: answer at once, never search the network for one.
+    if (-not $script:AdAvail) {
+        if ($d.save -or $d.test) { throw 'This PC is not joined to an Active Directory domain, so there is no domain controller to choose.' }
+        Send $ctx @{ ok = $true; joined = $false; dcs = @(); cfg = (Get-AdServerCfg); current = '' }; return
+    }
     # Tries one DC with a RootDSE read. Throws a readable message if it does not answer.
     $probe = {
         param($srv)
@@ -108,6 +113,12 @@ $ScreenHandlers['/api/ad-server'] = {
         if ($m -eq 'manual') { if (-not $srv) { throw 'Choose or type the domain controller.' }; [void](& $probe $srv) } else { $srv = '' }
         ([ordered]@{ mode = $m; server = $srv } | ConvertTo-Json) | Out-File $script:AdServerFile -Encoding utf8
     }
-    $cur = ''; try { $cur = "$((([ADSI]((Get-LdapPrefix) + 'RootDSE')).Properties['dnsHostName'].Value))" } catch {}
+    # v2.11.5: reading the DC name asks the network and can be slow, so the plain read answers at once and the page asks for the name
+    # separately ({ current:true }); the answer is kept for 5 minutes.
+    $cur = ''
+    if ($d.current) {
+        if ($script:AdCurName -and ((Get-Date) - $script:AdCurAt).TotalMinutes -lt 5 -and -not $d.save) { $cur = $script:AdCurName }
+        else { try { $cur = "$((([ADSI]((Get-LdapPrefix) + 'RootDSE')).Properties['dnsHostName'].Value))"; $script:AdCurName = $cur; $script:AdCurAt = Get-Date } catch {} }
+    }
     Send $ctx @{ ok = $true; cfg = (Get-AdServerCfg); current = $cur }
 }

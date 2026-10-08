@@ -4,6 +4,21 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.6 - 2026-10-08
+- **One README.** The project README and the docs index were combined into `README.md` in the package root (current version, all screens including Users report and Guest users report, requirements, quick start, folder map, document list, copyright). `docs/README.md` is now a short pointer to it. The README is updated in every release.
+
+## 2.11.5 - 2026-10-08
+- **Connections opens faster, no blank card.** Opening Settings > Connections sent the same requests several times at once (the server answers one at a time, so they queued, as the Progress list showed). Now the domain controller card and the Microsoft app card each load once at a time; the DC name is asked after the screen is shown (`/api/ad-server {current:true}`, kept 5 minutes); the Microsoft app card shows "Loading..." instead of an empty box (Screen-Settings 2.11.5, index.html).
+
+## 2.11.4 - 2026-10-08
+- **No DC search on a PC that is not in a domain.** The server first checks that the PC is domain joined; if not, `/api/ad-server` answers at once (`joined:false`) without any network search, and Settings > Connections switches the Domain controller card off with a short note (Screen-Settings 2.11.4, index.html).
+
+## 2.11.3 - 2026-10-08
+- **Copyright: MB Network.** Notice "(c) 2026 MB Network. All rights reserved." in the sidebar, Settings > About and the sign-in page; new `LICENSE.txt` (all rights reserved, third-party components keep their own licenses); footer line in docs/README.md.
+
+## 2.11.2 - 2026-10-08
+- **Confirmation words accept capital or small letters.** DELETE (Intune devices, Mailbox cleanup, OneDrive permanent delete), APPLY (Licenses), UPDATE and REVERT (updates) can now be typed as `delete`, `Delete`, `DELETE`, ... The page changes the typed text to capital letters before sending, and the back end no longer compares case-sensitively (Intune 2.5.6, Mailbox cleanup, OneDrive, Licenses 2.5.1, Create AD users, index.html).
+
 ## 2.11.1 - 2026-10-08
 - **Settings opens faster.** Opening Settings > Connections used to search for domain controllers on its own; on a slow network this froze the server (it answers one request at a time) and made every Settings section feel slow. It now searches only when you press *Find DCs*, and the list is kept for 10 minutes (Screen-Settings 2.11.1, index.html).
 

@@ -1,6 +1,6 @@
 ﻿# Screen-Intune.ps1 - back end for the Devices (Intune) screen, and the background jobs used by the Intune and OneDrive screens.
 # Screen: Devices (Intune)
-# Screen version: 2.5.5   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.5.6   (changes ONLY when this screen changes - not with every release)
 # Loaded by server.ps1 at start-up; do not run it on its own.
 #
 # Devices (Intune) - read only: every Intune managed device with its user, operating system, serial number, enrolment and last
@@ -198,12 +198,12 @@ function Complete-GJob_intuneact($j, $res, $err) {
     if ($err) { Write-ActRow 'Devices (Intune)' 'Remove devices' '' "Failed: $err" '' }
     $script:SpDirty = $true
 }
-# Handler: delete or retire the ticked devices. Request: action ('delete' or 'retire'), confirm (must be exactly DELETE, case sensitive),
+# Handler: delete or retire the ticked devices. Request: action ('delete' or 'retire'), confirm (DELETE in capital or small letters),
 # items (list of { intuneId, entraId, device, user }), entra (true = also remove the Entra device; only used for delete).
 $ScreenHandlers['/api/intune-action'] = {
     if (-not $script:Who) { throw 'Sign in to Microsoft first (Settings > Connections).' }
     $act = "$($d.action)"; if ($act -notin 'delete', 'retire') { throw 'Choose Delete or Retire.' }
-    if ("$($d.confirm)" -cne 'DELETE') { throw 'Type DELETE to confirm.' }
+    if ("$($d.confirm)" -ne 'DELETE') { throw 'Type DELETE to confirm.' }
     # Keep only items with a valid Intune id (a GUID: 36 characters of hex and dashes) and copy just the fields we need - nothing else is trusted.
     $items = @(@($d.items) | Where-Object { "$($_.intuneId)" -match '^[0-9a-fA-F-]{36}$' } | ForEach-Object { @{ intuneId = "$($_.intuneId)"; entraId = "$($_.entraId)"; device = "$($_.device)"; user = "$($_.user)" } })
     if (-not $items.Count) { throw 'Tick at least one device.' }
