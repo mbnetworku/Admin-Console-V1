@@ -39,16 +39,16 @@ It runs as a small local web server written in **Windows PowerShell 5.1** and se
 
 1. Extract the package.
 2. Run `Start.bat` (or `Start-Visible.bat` to see the console window). It elevates itself to local administrator.
-3. Open `http://localhost:8080` and sign in.
+3. Open `http://localhost:8080` and sign in with username **`admin`** and password **`admin`**. On this first sign-in the page asks you to choose a new password (at least 8 characters) before anything else works. The new login is saved as salted hashes in `owner-login.json` on this PC only.
 4. In **Settings > Connections**, sign in to Microsoft 365 and Active Directory.
 
 Other launchers: `Install-Service.bat` (run as a Windows service), `Allow-Tool.bat`, `Change-Login.bat` (change the owner login), `Reset-Password.bat`, `Revert-Update.bat`.
 
 ## Cannot sign in? Reset the password
 
-- **Owner login (the first login of the tool):** on the server PC double-click **`Reset-Password.bat`**. Windows asks once for administrator rights (the file runs as administrator by itself). Type a new username and a new password (at least 8 characters, typed twice). You do **not** need the old password: being administrator of the server PC is the proof. Then open the tool and sign in with the new login.
+- **Owner login (the first login of the tool):** on the server PC double-click **`Reset-Password.bat`**. Windows asks once for administrator rights (the file runs as administrator by itself). The owner login goes back to **`admin` / `admin`**. You do **not** need the old password: being administrator of the server PC is the proof. Then open the tool, sign in with `admin` / `admin` and choose a new password.
 - **Any other person:** an administrator resets the password in **Settings > Users** (set a new password or generate one and e-mail it).
-- To simply change a password you still know, use `Change-Login.bat` (it asks for the old one first).
+- To simply change a password you still know, use **Change my password** in the page, or `Change-Login.bat` (it asks for the old one first).
 - Every reset is written to the sign-in log. (The sign-in page itself shows no such message; this information is only here, in the technical documents and in the AI memory file.)
 
 

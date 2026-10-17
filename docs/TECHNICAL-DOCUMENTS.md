@@ -46,7 +46,7 @@ PasswordReset/
   Install-Service.bat        install as a Windows service (Tools\Install-Service.ps1)
   Allow-Tool.bat             firewall / URL reservation helper (Tools\Allow-Tool.ps1)
   Change-Login.bat           change the owner login (asks for the old one; runs as administrator)
-  Reset-Password.bat         forgot the owner password: new login without the old one (runs as administrator)
+  Reset-Password.bat         forgot the owner password: back to admin / admin (runs as administrator)
   Revert-Update.bat          go back to an earlier version (Tools\Revert-Update.ps1)
   VERSION.txt
 
@@ -209,7 +209,7 @@ The **Progress** button in the top bar opens a small pop-up in the middle of the
 
 ## Forgot the owner password (v2.11.9)
 
-`Reset-Password.bat` (package root) starts itself as local administrator and runs `server.ps1 -ResetLogin`: it asks for a new owner username and password (min 8 characters) without asking for the old one, because local administrator rights are the proof. The reset is written to the sign-in log. `Change-Login.bat` (also runs as administrator) changes the login but asks for the old one. Other people are reset in Settings > Users. The sign-in page does not show this; it is documented only in README, this file and the AI memory file.
+`Reset-Password.bat` (package root) starts itself as local administrator and runs `server.ps1 -ResetLogin`: it deletes `owner-login.json`, so the owner login goes back to `admin` / `admin` without asking for the old one, because local administrator rights are the proof. The next sign-in must choose a new password in the page. The reset is written to the sign-in log. `Change-Login.bat` (also runs as administrator) changes the login but asks for the old one. Other people are reset in Settings > Users. The sign-in page does not show this; it is documented only in README, this file and the AI memory file.
 
 ## Update progress bar (v2.11.13)
 

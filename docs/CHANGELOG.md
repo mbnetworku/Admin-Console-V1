@@ -4,6 +4,11 @@ Current version: **1.98.37** (2026-10-02)
 
 _Versions 1.0.0 to 1.14.0 are reconstructed from our conversation; the files at that time were not numbered._
 
+## 2.11.14 - 2026-10-17
+- **Default login admin / admin, new password at first sign-in.** The owner password hash was removed from server.ps1. With no saved login the tool accepts username `admin` and password `admin`; that sign-in can only open the "Choose a new password" window until a new password (8+ characters, not `admin`) is saved. The owner login is now kept as salted hashes in `owner-login.json` next to server.ps1 (local to the PC, kept by updates, never in the package). The console first-time setup was removed. The owner can now change the password in the page (Change my password).
+- **Reset-Password.bat** (runs as administrator) now deletes `owner-login.json`, so the owner login goes back to admin / admin. `Change-Login.bat` still works.
+- Log files, `login-lock.json`, old `backups\` and `updates\` zips were removed from the package and are ignored by git (`.gitignore`).
+
 ## 2.11.13 - 2026-10-08
 - **One progress bar while updating the server.** Installing an update (or going back to a saved version) used to show only "Updated... Waiting for the server...". Now one pop-up with a single bar shows the steps: installing, restarting, old server stopped, server back, loading the new version. A red bar and a clear message appear if the server does not come back in 2 minutes (index.html only).
 
