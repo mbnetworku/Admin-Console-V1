@@ -1,6 +1,6 @@
 ﻿# Screen-Users.ps1 - back end for one screen of the tool. Loaded by server.ps1 at start-up; do not run it on its own.
 # Screen: Users & roles (Settings)
-# Screen version: 2.10.0   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.11.14   (changes ONLY when this screen changes - not with every release)
 
 # permissions you tick. The built-in owner login (Change-Login.bat) is never listed here and can never be locked out.
 # Only salted PBKDF2 hashes are kept, in tool-users.json next to the tool. Every rule is enforced HERE, on the server - hiding
@@ -151,8 +151,9 @@ function Set-UserLastLogin($name) {
     try { $all = @(Read-ToolUsers); foreach ($u in $all) { if ("$($u.username)" -ieq $name) { $u | Add-Member -NotePropertyName lastLogin -NotePropertyValue ('{0:yyyy-MM-dd HH:mm}' -f (Get-Now)) -Force } }; Save-ToolUsers $all } catch {}
 }
 # Sets the current session user: 'owner' = the built-in owner (all permissions), otherwise a tool-user record (name, role, permissions, mustChange).
+# The owner on the default admin / admin login must choose a new password first.
 function Set-SessUser($u) {
-    if ($u -eq 'owner') { $script:SessUser = @{ name = 'Owner'; owner = $true; role = 'admin'; perms = @($script:PermKeys) } }
+    if ($u -eq 'owner') { $script:SessUser = @{ name = 'Owner'; owner = $true; role = 'admin'; perms = @($script:PermKeys); mustChange = [bool](Test-DefaultLogin) } }
     else { $script:SessUser = @{ name = "$($u.username)"; owner = $false; role = "$($u.role)"; perms = @(Get-UserPerms $u); mustChange = ($u.mustChange -eq $true) } }
 }
 
@@ -224,12 +225,12 @@ function Get-ApiNeed($path, $d) {
 }
 # $null = allowed, otherwise the message to show
 # Called by server.ps1 for each /api/ request. Returns $null if the current user may call $path, or the message to show.
-# The owner may do everything. A user who must change the password first can only use status, me-password and logout.
+# A user who must change the password first (also the owner on admin / admin) can only use status, me-password and logout. The owner may do everything else.
 function Get-ApiDenied($path, $d) {
     $u = $script:SessUser
     if (-not $u) { return 'Your sign-in is not recognised. Sign in again.' }
-    if ($u.owner) { return $null }
     if ($u.mustChange -and $path -notin '/api/status', '/api/me-password', '/api/logout') { return 'Change your password first (a window is open in the page).' }
+    if ($u.owner) { return $null }
     $need = Get-ApiNeed $path $d
     if ($need -eq '') { return $null }
     if ($need -eq 'admin') { if ("$($u.role)" -eq 'admin') { return $null } else { return 'This action is for administrators only.' } }
@@ -332,10 +333,19 @@ $ScreenHandlers['/api/users-delete'] = {
     if ($script:SessUser -and $script:Session -and "$($script:SessUser.name)" -ieq $name) { $script:Session = $null }
     Send $ctx @{ ok = $true; message = "Removed $name"; users = @($keep | ForEach-Object { Get-UserView $_ }) }
 }
-# Handler /api/me-password. Any signed-in tool user changes their OWN password. Input $d.oldPassword, $d.newPassword (min 8 characters).
-# Not for the owner (Change-Login.bat), SSO or AD sign-ins - their password lives elsewhere. Clears the 'must change password' flag.
+# Handler /api/me-password. Any signed-in tool user (or the owner) changes their OWN password. Input $d.oldPassword, $d.newPassword (min 8 characters).
+# The owner keeps the username used to sign in; the new hashes go to owner-login.json. Not for SSO or AD sign-ins - their password lives elsewhere.
+# Clears the 'must change password' flag.
 $ScreenHandlers['/api/me-password'] = {
-    if ($script:SessUser.owner) { throw 'The owner login is changed with Change-Login.bat (it is stored inside the tool, not here).' }
+    if ($script:SessUser.owner) {
+        $ou = "$($script:SessUser.ownerUser)"; if (-not $ou) { throw 'Sign out and sign in again, then change the password.' }
+        if (-not (Test-Login $ou "$($d.oldPassword)")) { throw 'The current password is not correct.' }
+        $np = "$($d.newPassword)"; if ($np.Length -lt 8) { throw 'The new password must be at least 8 characters.' }
+        if ($np -ceq "$($d.oldPassword)" -or $np -ceq $DefaultPass) { throw 'Choose a different password.' }
+        Save-Auth $ou $np; $script:SessUser.mustChange = $false
+        Write-LoginLog $ou 'Owner password changed in the page'
+        Send $ctx @{ ok = $true; message = 'Your password was changed.' }; return
+    }
     if ($script:SessUser.sso) { throw 'You signed in with Microsoft single sign-on - change your password in Microsoft 365.' }
     if ($script:SessUser.ad) { throw 'You signed in with your AD account - change that password in Windows (Ctrl+Alt+Del > Change a password).' }
     $all = @(Read-ToolUsers); $cur = $null

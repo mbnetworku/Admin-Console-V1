@@ -1,5 +1,5 @@
 ﻿# Screen: Server core (start-up, sessions, routing)
-# Screen version: 2.10.2   (changes ONLY when this screen changes - not with every release)
+# Screen version: 2.11.14   (changes ONLY when this screen changes - not with every release)
 # =====================================================================================================================
 # WHAT THIS FILE IS: the CORE of the Admin Console. Everything starts here (Start.bat runs it with -Background).
 # It does these jobs, in this order:
@@ -14,11 +14,11 @@
 #   log-settings.json, app-defaults.json, shutdown.signal, the Windows hosts file (administrator only).
 # Who may use it: anybody can open the sign-in page; every /api/ call needs the page token + a valid sign-in session, then the
 #   permission check Get-ApiDenied (see Screen-Users.ps1).
-# Switches: -ChangeLogin (change the owner login, asks for the old one), -ResetLogin (forgot it: set a NEW owner login, needs local administrator), -Background (no window), -ShowWindow (keep window), -NoBrowser, -Splash.
+# Switches: -ChangeLogin (change the owner login, asks for the old one), -ResetLogin (forgot it: back to admin / admin, needs local administrator), -Background (no window), -ShowWindow (keep window), -NoBrowser, -Splash.
 # =====================================================================================================================
 param(
     [switch]$ChangeLogin,
-    [switch]$ResetLogin,   # v2.11.9: Reset-Password.bat - new owner login without the old one (only as local administrator)
+    [switch]$ResetLogin,   # Reset-Password.bat - the owner login goes back to admin / admin (only as local administrator)
     [switch]$Background,   # started by itself with no window (the normal way since v1.78.0)
     [switch]$ShowWindow,   # Start-Visible.bat: keep this PowerShell window, like before (for troubleshooting)
     [switch]$NoBrowser,    # v1.98.41: restarted from the page - the browser tab is already open
@@ -52,7 +52,7 @@ function Set-Start([string]$id, [string]$state, [string]$label, [string]$detail 
 # Writes the final line of the progress file (DONE|url, ERROR|message or SETUP|message).
 function Set-StartEnd([string]$line) { $script:StartEnd = $line; Write-StartFile }
 # Version of the whole tool and its release date (shown on the page and in the logs). Each screen also has its own version in its header.
-$AppVersion = '2.11.13'; $AppDate = '2026-10-08'
+$AppVersion = '2.11.14'; $AppDate = '2026-10-17'
 # Detect files copied from different versions: index.html and login.html must carry the same version stamp as this script
 $script:VerNote = ''
 # The screens that are loaded at start-up: 'Security' means the file Screen-Security.ps1 (its folder comes from $script:CodeDir below).
@@ -225,11 +225,12 @@ try {
 } catch { Write-Host "Log settings were not applied: $($_.Exception.Message)" -ForegroundColor Yellow }
 # The Microsoft Graph PowerShell modules this tool needs (all are installed in the SAME version, see Initialize-Graph).
 $Mods = 'Microsoft.Graph.Authentication','Microsoft.Graph.Users','Microsoft.Graph.Identity.SignIns','Microsoft.Graph.Identity.DirectoryManagement'
-# Front-end sign-in: only SALTED HASHES of the username and password are stored, inside this script (next line).
-# The hashes cannot be turned back into the password, and nothing is saved anywhere else on the PC.
-# To change the login, run Change-Login.bat - it rewrites the next line.
-$EmbeddedAuth = '{"v":1,"it":100000,"us":"ekFZyA8ppEXEFAIJIojTBQ==","uh":"uzYHysQJMMQunIttZ04gaPzCC/rAnf6WSDrC+wEKvVA=","ps":"zYfWKGcUWyx+GfCtjFEjSA==","ph":"JnyBwqkEjEUHx0n//BZDd0Fk1cwrPwM/Psnh8waoftk="}'
-# Owner login data (decoded from the line above) and the old file location that is removed on start-up.
+# Front-end sign-in: only SALTED HASHES of the owner username and password are stored, in owner-login.json next to this script.
+# The hashes cannot be turned back into the password. The file is local to this PC (never shipped, kept by updates).
+# No file yet = first start: sign in with admin / admin, the page then asks for a new password before anything else works.
+$OwnerAuthFile = Join-Path $Root 'owner-login.json'
+$DefaultUser = 'admin'; $DefaultPass = 'admin'
+# Owner login data (read from the file above) and the old file location that is removed on start-up.
 $script:Auth = $null
 $OldAuthFile = Join-Path (Join-Path $env:LOCALAPPDATA 'PasswordResetTool') 'auth.dat'
 # Default values of the per-person state: on-premises AD sign-in (AdCred = typed account, kept in memory only), Microsoft sign-in,
@@ -472,28 +473,27 @@ function Test-Bytes($a, $b) {
     $diff = 0; for ($i = 0; $i -lt $a.Length; $i++) { $diff = $diff -bor ($a[$i] -bxor $b[$i]) }
     $diff -eq 0
 }
-# Only salted hashes of the username AND password are kept, written into the $EmbeddedAuth line of this script.
-# Saves a new owner login: makes random salts, hashes username and password, and REWRITES the $EmbeddedAuth line inside this script file.
-# The regex (?m)^$EmbeddedAuth = '...' finds that line. Throws if the line cannot be found.
+# Saves a new owner login: makes random salts, hashes username and password, and writes them to owner-login.json.
 function Save-Auth($user, $pass) {
     $rng = [Security.Cryptography.RandomNumberGenerator]::Create(); $it = 100000
     $s1 = New-Object byte[] 16; $s2 = New-Object byte[] 16; $rng.GetBytes($s1); $rng.GetBytes($s2)
     $json = [ordered]@{ v = 1; it = $it
         us = [Convert]::ToBase64String($s1); uh = [Convert]::ToBase64String((Get-PwHash $user $s1 $it))
         ps = [Convert]::ToBase64String($s2); ph = [Convert]::ToBase64String((Get-PwHash $pass $s2 $it)) } | ConvertTo-Json -Compress
-    $me = $PSCommandPath
-    $txt = [IO.File]::ReadAllText($me)
-    $line = "`$EmbeddedAuth = '$json'"
-    $new = [regex]::Replace($txt, "(?m)^\`$EmbeddedAuth = '[^']*'", [Text.RegularExpressions.MatchEvaluator]{ param($m) $line })
-    if ($new -ceq $txt -and $txt -notlike "*$json*") { throw 'Could not find the login line inside server.ps1.' }
-    [IO.File]::WriteAllText($me, $new, (New-Object Text.UTF8Encoding($false)))
+    [IO.File]::WriteAllText($OwnerAuthFile, $json, (New-Object Text.UTF8Encoding($false)))
     $script:Auth = $json | ConvertFrom-Json
 }
-# Reads the embedded login data (JSON) into an object; $null if it is damaged.
-function Read-Auth { try { $EmbeddedAuth | ConvertFrom-Json } catch { $null } }
+# Removes the saved owner login: the default admin / admin works again (and must be changed at the next sign-in).
+function Clear-Auth { if (Test-Path $OwnerAuthFile) { Remove-Item $OwnerAuthFile -Force }; $script:Auth = $null }
+# Reads the saved login data (JSON) into an object; $null if there is none or it is damaged.
+function Read-Auth { try { if (Test-Path $OwnerAuthFile) { Get-Content $OwnerAuthFile -Raw -Encoding UTF8 | ConvertFrom-Json } else { $null } } catch { $null } }
+# Is the owner still on the default admin / admin login (no owner-login.json yet)?
+function Test-DefaultLogin { -not $script:Auth }
 # Checks the OWNER login: both username and password hashes must match (both are always computed, so the time does not show which was wrong).
+# With no saved login only admin / admin is accepted.
 function Test-Login($user, $pass) {
-    $a = $script:Auth; if (-not $a) { return $false }
+    $a = $script:Auth
+    if (-not $a) { return ("$user".Trim() -ieq $DefaultUser -and "$pass" -ceq $DefaultPass) }
     $it = [int]$a.it
     $uOk = Test-Bytes (Get-PwHash $user ([Convert]::FromBase64String($a.us)) $it) ([Convert]::FromBase64String($a.uh))
     $pOk = Test-Bytes (Get-PwHash $pass ([Convert]::FromBase64String($a.ps)) $it) ([Convert]::FromBase64String($a.ph))
@@ -507,7 +507,7 @@ function Invoke-LoginSetup($verifyOld) {
         if (-not (Test-Login $ou $op)) { Write-Host 'The current username or password is incorrect.' -ForegroundColor Red; return $false }
     }
     Write-Host ''
-    Write-Host 'Create the login for this tool. Only salted hashes are stored, inside server.ps1 - nothing is saved elsewhere.' -ForegroundColor Cyan
+    Write-Host 'Create the login for this tool. Only salted hashes are stored, in owner-login.json.' -ForegroundColor Cyan
     $nu = "$(Read-Host 'New username')".Trim()
     if (-not $nu) { Write-Host 'Username cannot be empty.' -ForegroundColor Red; return $false }
     $p1 = ConvertTo-Plain (Read-Host 'New password (min 8 characters)' -AsSecureString)
@@ -838,34 +838,27 @@ function Write-Log($r, $method, $result) {
 $script:AdAvail = try { [bool](Get-CimInstance Win32_ComputerSystem -ErrorAction Stop).PartOfDomain } catch { $false }
 # Load the owner login; remove the old DPAPI login file from earlier versions if it still exists.
 $script:Auth = Read-Auth
-if (Test-Path $OldAuthFile) { try { Remove-Item $OldAuthFile -Force; Write-Host 'Removed the old saved login file from this PC (the login now lives inside the script).' -ForegroundColor Yellow } catch {} }
+if (Test-Path $OldAuthFile) { try { Remove-Item $OldAuthFile -Force; Write-Host 'Removed the old saved login file from this PC (the login now lives in owner-login.json).' -ForegroundColor Yellow } catch {} }
 # Change-Login.bat: ask for old + new login, save it and quit.
-# v2.11.9: Reset-Password.bat. For when the owner password is forgotten: no old password is asked, because being LOCAL ADMINISTRATOR of this PC is the proof.
+# Reset-Password.bat. For when the owner password is forgotten: no old password is asked, because being LOCAL ADMINISTRATOR of this PC is the proof.
+# The owner login goes back to admin / admin; the page asks for a new password at the next sign-in.
 if ($ResetLogin) {
     $isAdm = $false; try { $isAdm = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator) } catch {}
     if (-not $isAdm) { Write-Host 'Run Reset-Password.bat as administrator (right-click > Run as administrator).' -ForegroundColor Red; exit 1 }
-    Write-Host 'Reset the owner login. You do not need the old password.' -ForegroundColor Cyan
-    if (-not (Invoke-LoginSetup $false)) { exit 1 }
-    try { Write-LoginLog 'Owner' 'Owner login was reset with Reset-Password.bat' } catch {}
-    Write-Host 'Done. Open the tool and sign in with the new login. (Other people: reset their password in Settings > Users.)'; exit 0
+    try { Clear-Auth } catch { Write-Host "Could not reset the login: $($_.Exception.Message)" -ForegroundColor Red; exit 1 }
+    try { Write-LoginLog 'Owner' 'Owner login was reset to admin / admin with Reset-Password.bat' } catch {}
+    Write-Host 'Done. Open the tool and sign in with username admin and password admin - you will be asked to choose a new password.' -ForegroundColor Green
+    Write-Host '(Other people: reset their password in Settings > Users.)'; exit 0
 }
 if ($ChangeLogin) {
     if (-not (Invoke-LoginSetup $true)) { exit 1 }
     Write-Host 'Login updated. Start the tool with Start.bat.'; exit 0
 }
-# First start in background mode but no login yet: typing is needed, so open a normal window once and stop here.
-if ($Background -and -not $script:Auth) {
-    # First-time login setup needs typing: run the normal start once in a window (it goes to the background by itself afterwards)
-    Set-Start 'login' 'warn' 'Tool login' 'not set up yet - answer the questions in the window that opened'
-    Set-StartEnd 'SETUP|First-time setup: choose the username and password for the tool in the window that opened. The tool then starts by itself.'
-    Start-Process -FilePath 'powershell.exe' -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -Splash" -WorkingDirectory $Root
-    exit 0
-}
-if (-not $script:Auth) {
-    Write-Host 'First-time setup: this script has no login yet.' -ForegroundColor Yellow
-    while (-not (Invoke-LoginSetup $false)) { }
-}
-Set-Start 'login' 'ok' 'Tool login' 'set up'
+# No owner login yet: the default admin / admin works until the first sign-in, which must choose a new password.
+if (Test-DefaultLogin) {
+    Write-Host 'First start: sign in with username admin and password admin, then choose a new password.' -ForegroundColor Yellow
+    Set-Start 'login' 'warn' 'Tool login' 'default login - sign in with admin / admin and choose a new password'
+} else { Set-Start 'login' 'ok' 'Tool login' 'set up' }
 # STEP: Microsoft Graph modules (install if missing, load).
 Write-Host 'Checking Microsoft Graph modules...'
 try { Initialize-Graph }
@@ -1170,7 +1163,7 @@ while ($listener.IsListening) {
                     if ($adWho.denied) { Write-LoginLog $d.username "Refused (AD): $($adWho.denied)"; Clear-LoginFails $key; Send $ctx @{ error = $adWho.denied } 403; break }
                     if ($adWho.ok) { $loginWho = $adWho }
                 } else {
-                    if (Test-Login $d.username $d.password) { $loginWho = 'owner' } else { $loginWho = Test-ToolUserLogin $d.username $d.password }
+                    if (Test-Login $d.username $d.password) { $loginWho = 'owner'; $ownerUser = "$($d.username)".Trim() } else { $loginWho = Test-ToolUserLogin $d.username $d.password }
                     if ($loginWho -and $loginWho -isnot [string] -and $loginWho.denied) { Write-LoginLog $d.username "Refused: $($loginWho.denied)"; Clear-LoginFails $key; Send $ctx @{ error = $loginWho.denied } 403; break }   # expired (portal or AD)
                 }
                 if ($loginWho) {   # v2.4.0: 2-step sign-in (authenticator app) after the password
@@ -1195,8 +1188,8 @@ while ($listener.IsListening) {
                         $script:AdLogoutAt = if ($script:AdAutoMins -gt 0) { (Get-Date).AddMinutes($script:AdAutoMins) } else { $null }
                         Write-LoginLog $d.username "Success (AD sign-in, group $($adWho.group), role $($adWho.role))"
                     } else {
-                        Set-SessUser $loginWho; if ($loginWho -isnot [string]) { Set-UserLastLogin $nm }
-                        Write-LoginLog $d.username $(if ($loginWho -is [string]) { 'Success (owner sign-in)' } else { 'Success (normal sign-in, tool user)' })
+                        Set-SessUser $loginWho; if ($loginWho -isnot [string]) { Set-UserLastLogin $nm } else { $script:SessUser.ownerUser = $ownerUser }
+                        Write-LoginLog $d.username $(if ($loginWho -is [string]) { if (Test-DefaultLogin) { 'Success (owner sign-in with the default login - must choose a new password)' } else { 'Success (owner sign-in)' } } else { 'Success (normal sign-in, tool user)' })
                         if ($loginWho -isnot [string]) { Connect-AssignedAd $loginWho }   # v2.0.0: the AD account an administrator set for this person
                     }
                     # Give the browser its session cookie: HttpOnly (scripts cannot read it), SameSite=Lax; 'Secure' is added when HTTPS is used.

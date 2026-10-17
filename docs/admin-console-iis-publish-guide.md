@@ -4,7 +4,7 @@ Architecture: browser -> IIS (https, port 443, your certificate) -> reverse prox
 
 1. Server prep: Windows Server 2019/2022 joined to the domain; RSAT AD PowerShell; PowerShell modules Microsoft.Graph.Authentication + ExchangeOnlineManagement installed for the service account; DNS name (e.g. adminconsole.contoso.com) pointing to the server; certificate (.pfx) for that name.
 2. Service account (e.g. CONTOSO\svc-adminconsole): local admin of the server (needed for the task) + delegated AD rights only on the OUs it manages (reset password, unlock, enable/disable, group membership). Not Domain Admin.
-3. Copy the zip to C:\AdminConsole (unblock the zip first). Sign in as the service account once, run `Start-Visible.bat`, finish first setup (owner login), then Shut down.
+3. Copy the zip to C:\AdminConsole (unblock the zip first). Sign in as the service account once, run `Start-Visible.bat`, sign in once with admin / admin and choose a new owner password, then Shut down.
 4. `Install-Service.bat` (as admin) -> service account -> starts with Windows.
 5. IIS: install the Web Server role; install URL Rewrite 2.1 and Application Request Routing 3.0; IIS Manager > server > Application Request Routing Cache > Server Proxy Settings > Enable proxy (keep X-Forwarded-For preserve ticked).
 6. Import the certificate (Local Computer > Personal) - or use Settings > HTTPS / SSL in the portal.

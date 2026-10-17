@@ -1,0 +1,7 @@
+# Runtime data written on the server PC - never commit
+logs/
+backups/
+updates/
+login-lock.json
+owner-login.json
+tool-users.json
